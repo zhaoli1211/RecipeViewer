@@ -2,7 +2,7 @@
 //  RecipeViewerApp.swift
 //  RecipeViewer
 //
-//  Created by 赵立 on 2/21/25.
+//  Created by Li Zhao on 2/21/25.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ import SwiftUI
 struct RecipeViewerApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RecipesView()
         }
     }
 }
