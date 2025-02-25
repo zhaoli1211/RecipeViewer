@@ -8,7 +8,7 @@ import SwiftUI
 
 struct RecipesView: View {
 
-    @StateObject private var viewModel = RecipeViewModel()
+    @StateObject private var viewModel = RecipesViewModel()
 
     var body: some View {
         NavigationView {
@@ -36,26 +36,19 @@ struct RecipesView: View {
     }
 }
 
-
 struct RecipeRow: View {
     let recipe: Recipe
-    @ObservedObject var viewModel: RecipeViewModel
-    @State private var image: UIImage?
+    @ObservedObject var viewModel: RecipesViewModel
     
     var body: some View {
         HStack {
             // Recipe Image
-            if let image = image {
-                Image(uiImage: image)
-                    .resizable()
+            if let url = URL(string: recipe.imageUrlSmall) {
+                RemoteImageView(url: url)
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 50, height: 50)
                     .cornerRadius(5)
-            } else {
-                ProgressView()
-                    .frame(width: 50, height: 50)
             }
-            
             // Recipe Details
             VStack(alignment: .leading) {
                 Text(recipe.cuisine)
@@ -63,12 +56,6 @@ struct RecipeRow: View {
                 Text(recipe.name)
                     .font(.subheadline)
                     .foregroundColor(.gray)
-            }
-        }
-        .onAppear {
-            // Load image when the row appears
-            Task {
-                self.image = try await viewModel.loadImage(for: recipe.imageUrlSmall)
             }
         }
     }

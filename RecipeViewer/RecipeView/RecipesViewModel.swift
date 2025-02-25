@@ -10,23 +10,21 @@ import Combine
 import UIKit
 
 @MainActor
-class RecipeViewModel: ObservableObject {
+class RecipesViewModel: ObservableObject {
     
     @Published var recipes: [Recipe] = []
     @Published var isLoading = false
     @Published var error: Error?
     
-    let url =  "https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"
     
     private let fetchService = RecipesFetchService()
-    private let imageLoader = ImageLoader()
 
     func fetchRecipes() async {
         isLoading = true
         error = nil
         
         do {
-            let fetchedItems = try await fetchService.fetchRecipes(url)
+            let fetchedItems = try await fetchService.fetchRecipes()
             self.recipes = fetchedItems?.recipes ?? []
             self.recipes.sort(by: { $0.cuisine < $1.cuisine })
         } catch {
@@ -35,12 +33,5 @@ class RecipeViewModel: ObservableObject {
         }
         
         isLoading = false
-    }
-    
-    func loadImage(for url: String) async throws -> UIImage? {
-        if let url = URL(string: url) {
-            return try await imageLoader.loadImage(from: url)
-        }
-        return UIImage(systemName: "photo")
     }
 }
