@@ -8,14 +8,17 @@
 import Foundation
 
 actor RecipesFetchService {
-    private var recipes: Recipes?
     
-    func fetchRecipes(_ url: String) async throws -> Recipes? {
-        guard let url = URL(string: url) else {
-            throw URLError(.badURL)
-        }
+    private let urlSession: URLSession
         
-        let (data, response) = try await URLSession.shared.data(from: url)
+    init(urlSession: URLSession = .shared) {
+        self.urlSession = urlSession
+    }
+
+    func fetchRecipes() async throws -> Recipes? {
+        let url = URL(string: "https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json")!
+        
+        let (data, response) = try await urlSession.data(from: url)
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             // Handle error
@@ -23,7 +26,6 @@ actor RecipesFetchService {
         }
         
         let decodedItems = try JSONDecoder().decode(Recipes.self, from: data)
-        self.recipes = decodedItems
         return decodedItems
     }
 }
